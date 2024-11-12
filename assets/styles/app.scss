@@ -1,3 +1,23 @@
+$mainColor: #b7db34;
+
 body {
-    background-color: skyblue;
+  background-color: $mainColor;
+}
+
+form {
+  display: flex;
+  flex-flow: column nowrap;
+
+  div {
+    display: flex;
+    flex-flow: row nowrap;
+    padding-bottom: 0.3rem;
+
+    label {
+      min-width: 8rem;
+    }
+    input[type="checkbox"] {
+      justify-content: center;
+    }
+  }
 }
