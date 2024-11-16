@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Films;
 use App\Form\FilmsType;
+
 use App\Repository\FilmsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,10 +31,27 @@ final class FilmsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($film);
-            $entityManager->flush();
 
-            return $this->redirectToRoute('app_films_index', [], Response::HTTP_SEE_OTHER);
+
+
+
+            $afficheFile = $form->get('affiche')->getData();
+
+            if ($afficheFile) {
+                $uploadDirectory = $this->getParameter('kernel.project_dir') . '/public/affiches';
+                $newFilename = uniqid() . '.' . $afficheFile->guessExtension();
+
+                $afficheFile->move($uploadDirectory, $newFilename);
+
+                // Mise à jour de l'entité avec le nom de fichier
+                $film->setAffiche($newFilename);
+                $entityManager->persist($film);
+                $entityManager->flush();
+
+
+
+                return $this->redirectToRoute('app_films_index', [], Response::HTTP_SEE_OTHER);
+            }
         }
 
         return $this->render('films/new.html.twig', [
@@ -71,7 +89,7 @@ final class FilmsController extends AbstractController
     #[Route('/{id}', name: 'app_films_delete', methods: ['POST'])]
     public function delete(Request $request, Films $film, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$film->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $film->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($film);
             $entityManager->flush();
         }

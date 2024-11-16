@@ -5,12 +5,16 @@ namespace App\Form;
 use App\Entity\Films;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType as TypeTextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class FilmsType extends AbstractType
 {
@@ -19,16 +23,48 @@ class FilmsType extends AbstractType
         $builder
             ->add('titre', TypeTextType::class)
             ->add('description', TextareaType::class)
-            ->add('age_mini', NumberType::class)
-            ->add('note', NumberType::class)
-            ->add('coup_coeur', CheckboxType::class)
-            ->add('affiche', FileType::class, ['mapped' => false])
+            ->add('age_mini', NumberType::class, [
+                'attr' => [
+                    'min' => 1,
+                    'max' => 18
+                ]
+            ])
+            //->add('note', NumberType::class,)
+            ->add('coup_coeur', CheckboxType::class, [
+                'required' => false,
+            ])
+            ->add('affiche', FileType::class, [
+                'mapped' => false,
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Veuillez carger une affiche de film.',
+                    ]),
+                    new File([
+                        'maxSize' => '1M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/webpp'
+                        ],
+                        'mimeTypesMessage' => 'Veuillez télécharger un fichier au format WEBPP, JPEG ou PNG.'
+
+                    ])
+                ]
+            ])
 
 
             ->add('date_sortie', null, [
                 'widget' => 'single_text',
             ])
-            ->add('Genre')
+            ->add('Genre', ChoiceType::class, [
+                'choices' => [
+                    'Action' => 'action',
+                    'Comédie' => 'comedy',
+                    'ScienceFiction' => 'sf'
+                ],
+                'multiple' => true
+            ])
+            ->add('Submit', SubmitType::class)
         ;
     }
 

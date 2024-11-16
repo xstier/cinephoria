@@ -35,6 +35,9 @@ class Films
     #[ORM\Column]
     private array $Genre = [];
 
+    #[ORM\Column(length: 255)]
+    private ?string $affiche = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -122,5 +125,22 @@ class Films
         $this->Genre = $Genre;
 
         return $this;
+    }
+
+    public function getAffiche(): ?string
+    {
+        return $this->affiche;
+    }
+
+    public function setAffiche(string $affiche): static
+    {
+        $this->affiche = $affiche;
+
+        return $this;
+    }
+
+    public function getAffichePath(): string
+    {
+        return $this->affiche ? '/affiches/' . $this->affiche : '/affiches/default.jpg';
     }
 }

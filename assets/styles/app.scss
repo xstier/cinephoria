@@ -1,12 +1,29 @@
-$mainColor: #b7db34;
+$mainColor: #345bdb;
+$btnColor: #333;
+$btnText: #ddd;
+$linkColor: #eee;
 
 body {
   background-color: $mainColor;
+}
+button {
+  background: $btnColor;
+  color: $btnText;
+  border-radius: 20px;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+a {
+  text-decoration: none;
+  color: $linkColor;
 }
 
 form {
   display: flex;
   flex-flow: column nowrap;
+  text-align: left;
 
   div {
     display: flex;
@@ -19,5 +36,12 @@ form {
     input[type="checkbox"] {
       justify-content: center;
     }
+  }
+}
+
+table {
+  tr {
+    background: $btnColor;
+    color: $linkColor;
   }
 }
